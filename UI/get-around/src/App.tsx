@@ -15,6 +15,7 @@ import { addDays } from 'date-fns';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { style } from '@mui/system';
+import { MyComponent } from './s';
 
 interface Option {
 	value: string;
@@ -83,13 +84,14 @@ const App: FC = () => {
 						>
 							<Fade in={dateRangeOpen}>
 								<div className='date-range-field-con'>
-									<DateRange
+									<MyComponent />
+									{/* <DateRange
 										onChange={(newValue) => setDate((currValue) => ({ ...currValue, ...newValue }))}
 										editableDateInputs={true}
 										minDate={new Date()}
 										ranges={[dates.range1]}
 										className='date-range-field'
-									/>
+									/> */}
 								</div>
 							</Fade>
 						</Modal>
