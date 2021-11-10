@@ -1,4 +1,4 @@
-import { Location } from "../router/placesController";
+import { Location } from "../models/placeInterfaces.model";
 
 export interface SimplePlace {
     id: string;

@@ -36,7 +36,6 @@ export class App {
     this.app.use(cors());
     this.app.use(bodyParser.json());
     this.app.use(cookieParser());
-    this.app.use(cors());
   }
 
   private initializeControllers(controllers: Array<IController>) {

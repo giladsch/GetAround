@@ -1,15 +1,18 @@
 import { SimplePlace } from "../models/location.model";
 import * as _ from "lodash";
 import kmeans, { KMeans } from "kmeans-ts";
-import { Location } from "../router/placesController";
+import { Location } from "../models/placeInterfaces.model";
 
 
 export class TripPlanningBL {
     public clusterLocations(placePool: Array<SimplePlace>, numberOfDays: number): {[cluster: number]: Array<SimplePlace>} {          
-            const locations: Array<Location> = placePool.map(place => place.location);
+            const locations: Array<Array<number>> = placePool.map(place => [place.location.lat,place.location.lng]);
             const outputClusters: KMeans = kmeans(locations, numberOfDays);
-            let clusters: {[cluster: number]: Array<SimplePlace>};
-            outputClusters.indexes.forEach((value, index) => {                
+            let clusters: {[cluster: number]: Array<SimplePlace>}={};
+            outputClusters.indexes.forEach((value, index) => {  
+                if(!clusters[value]) {
+                    clusters[value]=[]
+                }          
                 clusters[value].push(placePool[index]);
             });
 
