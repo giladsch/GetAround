@@ -3,6 +3,7 @@ import * as express from "express";
 import { IController } from "../shared/IController";
 import axios, { AxiosResponse } from "axios";
 import { SimplePlace } from "../models/location.model";
+import kmeans from "kmeans-ts";
 
 interface PlacesAutocompleteResponse {
   predictions: PlaceAutocompletePrediction[];
