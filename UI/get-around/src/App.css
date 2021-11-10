@@ -1,38 +1,163 @@
 .App {
-  text-align: center;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	background-color: #ffffff;
+	height: 100vh;
+	overflow: hidden;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body {
+	overflow: hidden;
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+	flex: 4;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-size: calc(10px + 2vmin);
+	color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.App-logo {
+	pointer-events: none;
+	max-width: 60%;
+	filter: drop-shadow(3px 3px 3px grey);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+@media (prefers-reduced-motion: no-preference) {
+	.App-logo {
+		animation: Logo-Enter 1 1.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+	}
+}
+
+@keyframes Logo-Enter {
+	from {
+		transform: translateY(100px);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+.Map-logo {
+	width: 200px;
+	position: relative;
+	top: -50px;
+	border-radius: 20px;
+	filter: drop-shadow(0 0 5px rgb(114, 114, 114));
+	animation: Map-Enter 1 2.5s linear;
+}
+
+@keyframes Map-Enter {
+	0%,
+	45% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes Form-Enter {
+	0%,
+	20%
+	 {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes Circle-Enter {
+	from {
+		bottom: -175px;
+		right: -175px;
+		width: 350px;
+		height: 350px;
+		opacity: 0;
+	}
+	to {
+		width: 700px;
+		height: 700px;
+		border-radius: 350px;
+		bottom: -350px;
+		right: -350px;
+		opacity: 1;
+	}
+}
+
+.App-body {
+	flex: 6;
+	animation: Form-Enter 1 2.5s linear;
+}
+
+.circle {
+	position: absolute;
+	overflow: hidden;
+	animation: Circle-Enter 1 1.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+	box-shadow: 0 0 20px -5px;
+}
+
+.first-circle {
+	width: 700px;
+	height: 700px;
+	border-radius: 350px;
+	bottom: -350px;
+	right: -350px;
+	background-color: #ff5968;
+}
+
+.second-circle {
+	width: 700px;
+	height: 700px;
+	border-radius: 350px;
+	bottom: -350px;
+	left: -350px;
+	background-color: #ff9151;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 100%;
+}
+
+.places-select {
+	width: 300px;
+}
+
+.days-field {
+	width: 75px;
+	margin-top: 10px !important;
+}
+
+.spacer {
+	flex: 1;
+}
+
+.submit-button {
+	margin-bottom: 40px !important;
+}
+
+.date-range-field-con {
+	display: flex;
+	width: 100%;
+	height: 100%;
+	justify-content: center;
+	align-items: center;
+}
+
+.date-range-field {
+	z-index: 9999999;
+}
+
+.date-picker-button {
+	margin-top: 20px !important;
 }
