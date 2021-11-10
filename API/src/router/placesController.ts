@@ -20,9 +20,9 @@ export class PlacesController implements IController {
         "ChIJkRvJRqRhLxMRTpu4WRhK6CM",
         "ChIJ2UYsr1RgLxMRnVSDeOy_ZLg",
       ];
-      let promises: Array<Promise<AxiosResponse<Root>>> = [];
+      let promises: Array<Promise<AxiosResponse<Place>>> = [];
       ids.forEach((id) => {
-        const request = axios.get<Root>(
+        const request = axios.get<Place>(
           `${MapsBaseUrl}/place/details/json?place_id=${id}&key=${ApiKey}`
         );
         promises.push(request);
@@ -49,7 +49,7 @@ export class PlacesController implements IController {
         };
       });
 
-      let distances = [];
+      let distances: Array<Promise<AxiosResponse<RootObject>>> = [];
 
       places.forEach(async (place) => {
         const destinations = places
@@ -63,12 +63,12 @@ export class PlacesController implements IController {
         )}&mode=walking&language=en&origins=${encodeURIComponent(
           place.location.lat + "," + place.location.lng
         )}&key=${ApiKey}`;
-        distances.push(axios.get(`${url}`));
+        distances.push(axios.get<RootObject>(`${url}`));
       });
 
       let distancesResult = await Promise.all(distances);
       let distancesData = distancesResult.map((distancesResponse) => {
-        return distancesResponse.data;
+        return distancesResponse.data.rows;
       });
 
       res.send({ distancesData, places }).status(200);
@@ -76,7 +76,7 @@ export class PlacesController implements IController {
   }
 }
 
-export interface Root {
+export interface Place {
   html_attributions: Array<String>;
   status: string;
   result: Result;
@@ -185,56 +185,29 @@ export interface Review {
   time: number;
 }
 
-// interface PlacesDetailsResponse{
-//     html_attributions:Array<String>;
-//     result:Place;
-//     status:PlacesDetailsStatus;
-//     info_messages?:Array<string>;
-
-// }
-interface Place {
-  address_components?: Array<AddressComponent>;
-  adr_address?: string;
-  business_status?: string;
-  formatted_address?: string;
-  formatted_phone_number?: string;
-  geometry?: Geometry;
-  icon?: string;
-  icon_background_color?: string;
-  icon_mask_base_uri?: string;
-  international_phone_number?: string;
-  name?: string;
-  opening_hours?: string;
-  permanently_closed?: boolean;
-  photos?: Array<PlacePhoto>;
+export interface Distance {
+  text: string;
+  value: number;
 }
 
-interface PlacePhoto {}
-
-// interface PlaceOpeningHours{
-
-// }
-
-// interface Geometry{
-
-// }
-
-// interface AddressComponent{
-
-// }
-
-// interface PlacesDetailsStatus {
-
-// }
-interface PlaceAutocompletePrediction {
-  description: string;
-  place_id: string;
-  reference: string;
-  types?: Array<string>;
-  terms: Array<PlaceAutocompleteTerm>;
+export interface Duration {
+  text: string;
+  value: number;
 }
 
-interface PlaceAutocompleteTerm {
-  offset: number;
-  value: string;
+export interface Element {
+  distance: Distance;
+  duration: Duration;
+  status: string;
+}
+
+export interface Row {
+  elements: Element[];
+}
+
+export interface RootObject {
+  destination_addresses: string[];
+  origin_addresses: string[];
+  rows: Row[];
+  status: string;
 }
