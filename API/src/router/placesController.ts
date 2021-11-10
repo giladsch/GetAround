@@ -16,9 +16,9 @@ export class PlacesController implements IController {
     this.router.get(`/aaaaa`, async (req, res) => {
       const ids: Array<string> = [
         "ChIJrRMgU7ZhLxMRxAOFkC7I8Sg",
-        "ChIJrRMgU7ZhLxMRxAOFkC7I8Sg",
-        "ChIJrRMgU7ZhLxMRxAOFkC7I8Sg",
-        "ChIJrRMgU7ZhLxMRxAOFkC7I8Sg",
+        "ChIJaUtr7LFhLxMRZv_QkugkuUc",
+        "ChIJkRvJRqRhLxMRTpu4WRhK6CM",
+        "ChIJ2UYsr1RgLxMRnVSDeOy_ZLg",
       ];
       let promises: Array<Promise<AxiosResponse<Root>>> = [];
       ids.forEach((id) => {
@@ -48,7 +48,30 @@ export class PlacesController implements IController {
           location: data.result.geometry.location,
         };
       });
-      res.send(places).status(200);
+
+      let distances = [];
+
+      places.forEach(async (place) => {
+        const destinations = places
+          .filter((x) => x.id != place.id)
+          .map((x) => {
+            return x.location.lat + "," + x.location.lng;
+          })
+          .join("|");
+        const url = `${MapsBaseUrl}/distancematrix/json?destinations=${encodeURIComponent(
+          destinations
+        )}&mode=walking&language=en&origins=${encodeURIComponent(
+          place.location.lat + "," + place.location.lng
+        )}&key=${ApiKey}`;
+        distances.push(axios.get(`${url}`));
+      });
+
+      let distancesResult = await Promise.all(distances);
+      let distancesData = distancesResult.map((distancesResponse) => {
+        return distancesResponse.data;
+      });
+
+      res.send({ distancesData, places }).status(200);
     });
   }
 }
