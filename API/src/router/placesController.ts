@@ -3,10 +3,8 @@ import { IController } from "../shared/IController";
 import { UsersBL } from "../bl/usersBL";
 import { IUser } from "../models/user.model";
 
-export class UsersController implements IController {
+export class PlacesController implements IController {
   path = "places";
-  x =
-    "/place/findplacefromtext/json?input=israel&inputtype=textquery&key=AIzaSyD58m4Z_xT4KC_SJtUuFM5b8TsRoSgPLnY";
   router = express.Router();
 
   constructor() {
@@ -14,7 +12,9 @@ export class UsersController implements IController {
   }
 
   public intializeRoutes() {
-    this.router.get(this.path, async (req, res) => {});
+    this.router.get('', async (req, res) => {
+      res.send(true).status(200);
+    });
 
     this.router.post(this.path, async (req, res) => {
       const user: IUser = req.body;

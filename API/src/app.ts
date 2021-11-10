@@ -40,7 +40,7 @@ export class App {
 
   private initializeControllers(controllers: Array<IController>) {
     controllers.forEach((controller) => {
-      this.app.use(`api/${controller.path}`, controller.router);
+      this.app.use(`/api/${controller.path}`, controller.router);
     });
 
     // this.app.get("/", (req, res) => {
