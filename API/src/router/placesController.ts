@@ -1,9 +1,8 @@
 import { MapsBaseUrl, ApiKey } from "./../conts";
 import * as express from "express";
 import { IController } from "../shared/IController";
-import { UsersBL } from "../bl/usersBL";
-import { IUser } from "../models/user.model";
 import axios, { AxiosResponse } from "axios";
+import { SimplePlace } from "../models/location.model";
 
 export class PlacesController implements IController {
   path = "places";
@@ -16,10 +15,10 @@ export class PlacesController implements IController {
   public initializeRoutes() {
     this.router.get(`/aaaaa`, async (req, res) => {
       const ids: Array<string> = [
-        "ChIJi8mnMiRJABURuiw1EyBCa2o",
-        "ChIJi8mnMiRJABURuiw1EyBCa2o",
-        "ChIJi8mnMiRJABURuiw1EyBCa2o",
-        "ChIJi8mnMiRJABURuiw1EyBCa2o",
+        "ChIJrRMgU7ZhLxMRxAOFkC7I8Sg",
+        "ChIJrRMgU7ZhLxMRxAOFkC7I8Sg",
+        "ChIJrRMgU7ZhLxMRxAOFkC7I8Sg",
+        "ChIJrRMgU7ZhLxMRxAOFkC7I8Sg",
       ];
       let promises: Array<Promise<AxiosResponse<Root>>> = [];
       ids.forEach((id) => {
@@ -29,9 +28,27 @@ export class PlacesController implements IController {
         promises.push(request);
       });
       let responses = await Promise.all(promises);
-      let x = responses.map((respons) => {
-        return respons.data;
+      let places: Array<SimplePlace> = responses.map((response) => {
+        let { data } = response;
+        let days: { [id: number]: { openHour: string; closeHour: string } } =
+          {};
+        data.result.opening_hours.periods.map((period) => {
+          const open = period.open.time;
+          const close = period.close.time;
+          days[period.close.day] = {
+            openHour: open.slice(0, 2) + ":" + open.slice(2),
+            closeHour: close.slice(0, 2) + ":" + close.slice(2),
+          };
+        });
+
+        return {
+          id: data.result.place_id,
+          visitDuration: 1,
+          days,
+          location: data.result.geometry.location,
+        };
       });
+      res.send(places).status(200);
     });
   }
 }

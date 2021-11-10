@@ -1,7 +1,8 @@
-export interface Location {
-    _id: string;
-    location: GeolocationCoordinates;
-    openingHour: number;
-    closingHour: number;
-    visitDuration: number;
+import { Location } from "../router/placesController";
+
+export interface SimplePlace {
+  id: string;
+  location: Location;
+  days: { [id: number]: { openHour: string; closeHour: string } };
+  visitDuration: number;
 }
