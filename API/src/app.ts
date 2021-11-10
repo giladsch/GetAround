@@ -3,8 +3,6 @@ import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import * as cookieParser from "cookie-parser";
 import { IController } from "./shared/IController";
-import { connect } from "mongoose";
-
 export class App {
   app: express.Application;
   port: number;
