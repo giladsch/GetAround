@@ -3,6 +3,7 @@ import * as express from "express";
 import { IController } from "../shared/IController";
 import axios, { AxiosResponse } from "axios";
 import { SimplePlace } from "../models/location.model";
+import kmeans from "kmeans-ts";
 
 export class PlacesController implements IController {
   path = "places";
@@ -46,6 +47,7 @@ export class PlacesController implements IController {
           visitDuration: 1,
           days,
           location: data.result.geometry.location,
+          name:data.result.name
         };
       });
 
