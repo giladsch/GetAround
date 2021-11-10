@@ -4,6 +4,7 @@ import { config } from "dotenv";
 
 config();
 
-const app = new App([new PlacesController()], 8000);
+const placesCont: PlacesController = new PlacesController();
+const app = new App([placesCont], 8000);
 
 app.listen();
