@@ -268,6 +268,7 @@ export class PlacesController implements IController {
         value: prediction.place_id!,
         label: prediction.description,
       }));
+      res.send(options).status(200);
     });
   }
 }
