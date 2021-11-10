@@ -19,18 +19,18 @@ export class App {
   }
 
   public async listen() {
-    try {
-      await connect(process.env.connectString, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-      });
-      console.log("mongodb started.");
-      this.app.listen(this.port, () => {
-        console.log(`App listening on the port ${this.port}`);
-      });
-    } catch (e) {
-      console.error(`an error accourd: ${e}`);
-    }
+    //   try {
+    //     await connect(process.env.connectString, {
+    //       useNewUrlParser: true,
+    //       useUnifiedTopology: true
+    //     });
+    //     console.log("mongodb started.");
+    this.app.listen(this.port, () => {
+      console.log(`App listening on the port ${this.port}`);
+    });
+    //   } catch (e) {
+    //     console.error(`an error accourd: ${e}`);
+    //   }
   }
 
   private initializeMiddlewares() {
@@ -39,8 +39,8 @@ export class App {
   }
 
   private initializeControllers(controllers: Array<IController>) {
-    controllers.forEach(controller => {
-      this.app.use("/api", controller.router);
+    controllers.forEach((controller) => {
+      this.app.use(`/api/${controller.path}`, controller.router);
     });
 
     // this.app.get("/", (req, res) => {

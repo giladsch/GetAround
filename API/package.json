@@ -17,7 +17,7 @@
     "@types/mongoose": "^5.5.37",
     "@types/swagger-jsdoc": "^3.0.2",
     "@types/swagger-ui-express": "^4.1.1",
-    "axios": "^0.19.2",
+    "axios": "^0.24.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.4",
     "dotenv": "^8.2.0",
