@@ -42,9 +42,5 @@ export class App {
     controllers.forEach((controller) => {
       this.app.use(`/api/${controller.path}`, controller.router);
     });
-
-    // this.app.get("/", (req, res) => {
-    //   res.send("hello adi");
-    // });
   }
 }
