@@ -1,8 +1,10 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
-import * as cors from "cors";
 import * as cookieParser from "cookie-parser";
 import { IController } from "./shared/IController";
+
+const cors = require("cors")
+
 export class App {
   app: express.Application;
   port: number;
@@ -25,7 +27,7 @@ export class App {
 		//     });
 		//     console.log("mongodb started.");
 		this.app.listen(process.env.PORT || 80, () => {
-			console.log(`App listening on the port ${this.port}`);
+			console.log(`App listening on the port ${process.env.PORT || 80}`);
 		});
 		//   } catch (e) {
 		//     console.error(`an error accourd: ${e}`);

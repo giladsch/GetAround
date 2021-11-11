@@ -92,8 +92,8 @@ export class SPFAlgorithm {
             return visited;
 
         const nodeToVisit = unvisited.reduce((prev, curr) => {
-            const prevDistanceTime = distances[currNode.name][prev.name] / 3600;
-            const currDistanceTime = distances[currNode.name][curr.name] / 3600;
+            const prevDistanceTime = distances[currNode.id][prev.id] / 3600;
+            const currDistanceTime = distances[currNode.id][curr.id] / 3600;
             const prevWeight = this.getVisitWeight(prev, currentTime, prevDistanceTime);
             const currWeight = this.getVisitWeight(curr, currentTime, currDistanceTime);
             if (prevWeight != null && curr == null)
@@ -111,7 +111,7 @@ export class SPFAlgorithm {
             unvisited = unvisited.filter(node => node.id != nodeToVisit.id);
             visited.push(nodeToVisit);
             const { workingHours: { opening, closing }, stayDuration } = nodeToVisit;
-            currentTime = opening >= currentTime + distances[currNode.name][nodeToVisit.name] / 3600 ? opening + stayDuration : currentTime + distances[currNode.name][nodeToVisit.name] / 3600 + stayDuration;
+            currentTime = opening >= currentTime + distances[currNode.id][nodeToVisit.id] / 3600 ? opening + stayDuration : currentTime + distances[currNode.id][nodeToVisit.id] / 3600 + stayDuration;
             //visited = evalOptimalPath(nodeToVisit, distances, unvisited, visited, currentTime); 
         } else {
             visited = visited.filter(node => node.id != currNode.id);//pop curr
