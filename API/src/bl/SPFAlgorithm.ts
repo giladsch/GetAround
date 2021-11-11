@@ -30,8 +30,8 @@ export function locationClusterConstructor(clusters: {[cluster: number]: SimpleP
         const locationNodes: LocationNode[] = simplePlaces.map(simplePlace => {
             const { id, name, location, days, visitDuration } = simplePlace;
             const workingHours = {
-                opening: days[day].openHour, 
-                closing: days[day].closeHour,
+                opening: days[day] && days[day].openHour || 9, 
+                closing: days[day] && days[day].closeHour || 20,
             }
 
             const locationNode: LocationNode = {
@@ -91,9 +91,9 @@ export class SPFAlgorithm {
         if (unvisited.length == 0)
             return visited;
 
-        const nodeToVisit = unvisited.reduce(function (prev, curr) {
-            const prevDistanceTime = distances[currNode.name][prev.name];
-            const currDistanceTime = distances[currNode.name][curr.name];
+        const nodeToVisit = unvisited.reduce((prev, curr) => {
+            const prevDistanceTime = distances[currNode.name][prev.name] / 3600;
+            const currDistanceTime = distances[currNode.name][curr.name] / 3600;
             const prevWeight = this.getVisitWeight(prev, currentTime, prevDistanceTime);
             const currWeight = this.getVisitWeight(curr, currentTime, currDistanceTime);
             if (prevWeight != null && curr == null)
@@ -111,7 +111,7 @@ export class SPFAlgorithm {
             unvisited = unvisited.filter(node => node.id != nodeToVisit.id);
             visited.push(nodeToVisit);
             const { workingHours: { opening, closing }, stayDuration } = nodeToVisit;
-            currentTime = opening >= currentTime + distances[currNode.name][nodeToVisit.name] ? opening + stayDuration : currentTime + distances[currNode.name][nodeToVisit.name] + stayDuration;
+            currentTime = opening >= currentTime + distances[currNode.name][nodeToVisit.name] / 3600 ? opening + stayDuration : currentTime + distances[currNode.name][nodeToVisit.name] / 3600 + stayDuration;
             //visited = evalOptimalPath(nodeToVisit, distances, unvisited, visited, currentTime); 
         } else {
             visited = visited.filter(node => node.id != currNode.id);//pop curr
@@ -119,7 +119,9 @@ export class SPFAlgorithm {
             //visited = evalOptimalPath(nodeToVisit, distances, unvisited, visited, currentTime); 
         }
 
-        visited = this.evalOptimalPath(nodeToVisit, distances, unvisited, visited, currentTime);
+        const newVisited = this.evalOptimalPath(nodeToVisit, distances, unvisited, visited, currentTime);
+
+        return newVisited;
     }
 
     public getVisitWeight(destNode: LocationNode, currentTime: number, distanceTime: number): number | null {

@@ -36,6 +36,7 @@ export class PlacesController implements IController {
       let responses = await Promise.all(promises);
       let places: Array<SimplePlace> = responses.map((response) => {
         let { data } = response;
+
         let days: { [id: number]: { openHour: number; closeHour: number } } =
           {};
         data.result.opening_hours.periods.map((period) => {
@@ -52,7 +53,7 @@ export class PlacesController implements IController {
 
         return {
           id: data.result.place_id,
-          name: data.result.name,
+          name: data.result.formatted_address,
           visitDuration: 1,
           days,
           location: data.result.geometry.location,
@@ -82,18 +83,18 @@ export class PlacesController implements IController {
       });
       let distances = {}
       for (let [index, value] of Object.entries(distancesData)) {
-      // Object.entries(distancesData).forEach((distanceData,index)=>{
-        if(!distances[value.origin_addresses[0]]){
-          distances[value.origin_addresses[0]]={}
+        // Object.entries(distancesData).forEach((distanceData,index)=>{
+        if (!distances[value.origin_addresses[0]]) {
+          distances[value.origin_addresses[0]] = {}
         }
-       let places =  value.destination_addresses.map(x=>x)
-       for (let [index1, value1] of Object.entries(value.rows)) {
-        value1["elements"].forEach((element,index2)=>{
-        distances[value.origin_addresses[0]][places[index2]] = 
-         element["duration"].value
-      });
-      }
-      //  })
+        let places = value.destination_addresses.map(x => x)
+        for (let [index1, value1] of Object.entries(value.rows)) {
+          value1["elements"].forEach((element, index2) => {
+            distances[value.origin_addresses[0]][places[index2]] =
+              element["duration"].value
+          });
+        }
+        //  })
       }
       // });
 
@@ -101,8 +102,8 @@ export class PlacesController implements IController {
       const newClusters: LocationCluster[] = locationClusterConstructor(clusters, distances);
       const selectedLocationNodes: LocationNode[][] = newClusters.map(cluster => new SPFAlgorithm().getOptimalPath(cluster));
       const resultLocations = selectedLocationNodes.map((selectedLocationsPerDay: LocationNode[]) => {
-          return selectedLocationsPerDay.map((selectedLocationNode: LocationNode) => selectedLocationNode.location);
-        });
+        return selectedLocationsPerDay.map((selectedLocationNode: LocationNode) => ({ ...selectedLocationNode.location, name: selectedLocationNode.name }));
+      });
 
       res.send(resultLocations).status(200);
     });
@@ -122,5 +123,5 @@ export class PlacesController implements IController {
       }));
       res.send(options).status(200);
     });
-  } 
+  }
 }
