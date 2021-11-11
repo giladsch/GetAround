@@ -5,7 +5,7 @@ import axios, { AxiosResponse } from "axios";
 import { SimplePlace } from "../models/location.model";
 import { Place, Option, RootObject, PlacesAutocompleteResponse } from "../models/placeInterfaces.model";
 import { TripPlanningBL } from "../bl/tripPlanningBL";
-import { SPFAlgorithm, LocationCluster } from "../bl/SPFAlgorithm";
+import { SPFAlgorithm, LocationCluster, locationClusterConstructor } from "../bl/SPFAlgorithm";
 
 export class PlacesController implements IController {
   path = "places";
@@ -33,14 +33,14 @@ export class PlacesController implements IController {
       let responses = await Promise.all(promises);
       let places: Array<SimplePlace> = responses.map((response) => {
         let { data } = response;
-        let days: { [id: number]: { openHour: string; closeHour: string } } =
+        let days: { [id: number]: { openHour: number; closeHour: number } } =
           {};
         data.result.opening_hours.periods.map((period) => {
           const open = period.open.time;
           const close = period.close.time;
           days[period.close.day] = {
-            openHour: open.slice(0, 2) + ":" + open.slice(2),
-            closeHour: close.slice(0, 2) + ":" + close.slice(2),
+            openHour: parseInt(open.slice(0, 2)) + parseInt(open.slice(2)) / 60,
+            closeHour: parseInt(close.slice(0, 2)) + parseInt(close.slice(2)) / 60,
           };
         });
 
@@ -92,7 +92,7 @@ export class PlacesController implements IController {
       // });
 
       const clusters = new TripPlanningBL().clusterLocations(places,2);
-      const newClusters: LocationCluster[] = [];
+      const newClusters: LocationCluster[] = locationClusterConstructor(clusters, distances);
       const result = newClusters.map(cluster => new SPFAlgorithm().getOptimalPath(cluster)); 
       res.send({ distancesData, places,distances }).status(200);
     });
