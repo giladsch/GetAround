@@ -3,7 +3,12 @@ import * as express from "express";
 import { IController } from "../shared/IController";
 import axios, { AxiosResponse } from "axios";
 import { SimplePlace } from "../models/location.model";
-import { Place, Option, RootObject, PlacesAutocompleteResponse } from "../models/placeInterfaces.model";
+import {
+  Place,
+  Option,
+  RootObject,
+  PlacesAutocompleteResponse,
+} from "../models/placeInterfaces.model";
 import { TripPlanningBL } from "../bl/tripPlanningBL";
 import { SPFAlgorithm, LocationCluster, locationClusterConstructor } from "../bl/SPFAlgorithm";
 
@@ -16,13 +21,11 @@ export class PlacesController implements IController {
   }
 
   public initializeRoutes() {
-    this.router.get(`/aaaaa`, async (req, res) => {
-      const ids: Array<string> = [
-        "ChIJrRMgU7ZhLxMRxAOFkC7I8Sg",
-        "ChIJaUtr7LFhLxMRZv_QkugkuUc",
-        "ChIJkRvJRqRhLxMRTpu4WRhK6CM",
-        "ChIJ2UYsr1RgLxMRnVSDeOy_ZLg",
-      ];
+    this.router.post("/plan", async (req, res) => {
+      const ids: Array<string> = req.body.places.map((place) => {
+        return place.value;
+      });
+      const numOfDays: number = req.body.numOfDays;
       let promises: Array<Promise<AxiosResponse<Place>>> = [];
       ids.forEach((id) => {
         const request = axios.get<Place>(
@@ -37,6 +40,9 @@ export class PlacesController implements IController {
           {};
         data.result.opening_hours.periods.map((period) => {
           const open = period.open.time;
+          if (!period.close) {
+            period.close = { time: "2359", day: period.open.day };
+          }
           const close = period.close.time;
           days[period.close.day] = {
             openHour: parseInt(open.slice(0, 2)) + parseInt(open.slice(2)) / 60,
