@@ -5,6 +5,7 @@ import axios, { AxiosResponse } from "axios";
 import { SimplePlace } from "../models/location.model";
 import { Place, Option, RootObject, PlacesAutocompleteResponse } from "../models/placeInterfaces.model";
 import { TripPlanningBL } from "../bl/tripPlanningBL";
+import { SPFAlgorithm, LocationCluster } from "../bl/SPFAlgorithm";
 
 export class PlacesController implements IController {
   path = "places";
@@ -52,9 +53,9 @@ export class PlacesController implements IController {
         };
       });
 
-      let distances: Array<Promise<AxiosResponse<RootObject>>> = [];
+      let distancesPromise: Array<Promise<AxiosResponse<RootObject>>> = [];
 
-      places.forEach(async (place) => {
+      places.forEach((place) => {
         const destinations = places
           .filter((x) => x.id != place.id)
           .map((x) => {
@@ -66,15 +67,34 @@ export class PlacesController implements IController {
         )}&mode=walking&language=en&origins=${encodeURIComponent(
           place.location.lat + "," + place.location.lng
         )}&key=${ApiKey}`;
-        distances.push(axios.get<RootObject>(`${url}`));
+        distancesPromise.push(axios.get<RootObject>(`${url}`));
       });
 
-      let distancesResult = await Promise.all(distances);
+      let distancesResult = await Promise.all(distancesPromise);
       let distancesData = distancesResult.map((distancesResponse) => {
-        return distancesResponse.data.rows;
+        return distancesResponse.data;
       });
+      let distances = {}
+      for (let [index, value] of Object.entries(distancesData)) {
+      // Object.entries(distancesData).forEach((distanceData,index)=>{
+        if(!distances[value.origin_addresses[0]]){
+          distances[value.origin_addresses[0]]={}
+        }
+       let places =  value.destination_addresses.map(x=>x)
+       for (let [index1, value1] of Object.entries(value.rows)) {
+        value1["elements"].forEach((element,index2)=>{
+        distances[value.origin_addresses[0]][places[index2]] = 
+         element["duration"].value
+      });
+      }
+      //  })
+      }
+      // });
+
       const clusters = new TripPlanningBL().clusterLocations(places,2);
-      res.send({ distancesData, places }).status(200);
+      const newClusters: LocationCluster[] = [];
+      const result = newClusters.map(cluster => new SPFAlgorithm().getOptimalPath(cluster)); 
+      res.send({ distancesData, places,distances }).status(200);
     });
 
     this.router.post("/search", async (req, res) => {
@@ -92,8 +112,5 @@ export class PlacesController implements IController {
       }));
       res.send(options).status(200);
     });
-  }
-
-  public bl: TripPlanningBL = new TripPlanningBL();
-  public 
+  } 
 }
