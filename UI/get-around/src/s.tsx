@@ -46,17 +46,28 @@ export const MyComponent: FC<MyComponentProps> = ({ points }) => {
 	}, [origin, destination, waypoints]);
 
 	return (
-		<div>
-			<GoogleMap mapContainerStyle={containerStyle} center={center} zoom={10}>
-				<DirectionsRenderer directions={result} />
-			</GoogleMap>
-			<div className='buttons-con'>
-				<Button variant='contained' onClick={() => setIndex(index - 1)} disabled={index === 0}>
-					{'<'}
-				</Button>
-				<Button variant='contained' onClick={() => setIndex(index + 1)} disabled={index === points.length - 1}>
-					{'>'}
-				</Button>
+		<div className='map-con'>
+			<div className='info-con'>
+				<h1>Day {index + 1}</h1>
+				{points[index].map((point, index1) => (
+					<div className="row">
+						<div className='index'>{index1 + 1}</div>
+						<span className='name'>{point.name}</span>
+					</div>
+				))}
+			</div>
+			<div>
+				<GoogleMap mapContainerStyle={containerStyle} center={center} zoom={10}>
+					<DirectionsRenderer directions={result} />
+				</GoogleMap>
+				<div className='buttons-con'>
+					<Button variant='contained' onClick={() => setIndex(index - 1)} disabled={index === 0}>
+						{'<'}
+					</Button>
+					<Button variant='contained' onClick={() => setIndex(index + 1)} disabled={index === points.length - 1}>
+						{'>'}
+					</Button>
+				</div>
 			</div>
 		</div>
 	);

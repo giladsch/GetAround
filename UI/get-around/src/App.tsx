@@ -32,7 +32,7 @@ const _loadOptions = async (inputValue: string): Promise<Option[]> => {
 
 const getPlan = async (places: MultiValue<Option>, numOfDays: number): Promise<any> => {
 	const plenPerDay = (
-		await axios.post<any>(`http://localhost/api/places/plan`, {
+		await axios.post<any>(`${SERVER_URL}/api/places/plan`, {
 			places,
 			numOfDays,
 		})
@@ -81,7 +81,7 @@ const App: FC = () => {
 
 	const getPlan = useCallback(async (places: MultiValue<Option>, numOfDays: number): Promise<any> => {
 		const planPerDay = (
-			await axios.post<Point[][]>(`http://localhost/api/places/plan`, {
+			await axios.post<Point[][]>(`${SERVER_URL}/api/places/plan`, {
 				places,
 				numOfDays,
 			})
@@ -99,6 +99,7 @@ const App: FC = () => {
 				<img src={logo} className='App-logo' alt='logo' />
 				<img src={mapPhoto} className='Map-logo' alt='logo' />
 			</div>
+			<div className='my-filler' />
 			<div className='App-body'>
 				<form>
 					<ThemeProvider theme={theme}>
