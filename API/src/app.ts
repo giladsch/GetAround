@@ -27,7 +27,7 @@ export class App {
 		//       useUnifiedTopology: true
 		//     });
 		//     console.log("mongodb started.");
-		this.app.listen(this.port, () => {
+		this.app.listen(process.env.PORT || 80, () => {
 			console.log(`App listening on the port ${this.port}`);
 		});
 		//   } catch (e) {
@@ -36,6 +36,7 @@ export class App {
 	}
 
 	private initializeMiddlewares() {
+		this.app.get('/isAlive', (req, res) => res.send('alive'));
 		this.app.use(bodyParser.json());
 		this.app.use(cookieParser());
 		this.app.use(cors());

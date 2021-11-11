@@ -22,8 +22,10 @@ interface Option {
 	label: string;
 }
 
+const SERVER_URL = "https://get-around-api-jzldcxdgrq-ew.a.run.app";
+
 const _loadOptions = async (inputValue: string): Promise<Option[]> => {
-	const options = (await axios.post<Option[]>(`http://localhost:8000/api/places/search`, { value: inputValue })).data;
+	const options = (await axios.post<Option[]>(`${SERVER_URL}/api/places/search`, { value: inputValue })).data;
 
 	return options;
 };
@@ -84,14 +86,13 @@ const App: FC = () => {
 						>
 							<Fade in={dateRangeOpen}>
 								<div className='date-range-field-con'>
-									<MyComponent />
-									{/* <DateRange
+									<DateRange
 										onChange={(newValue) => setDate((currValue) => ({ ...currValue, ...newValue }))}
 										editableDateInputs={true}
 										minDate={new Date()}
 										ranges={[dates.range1]}
 										className='date-range-field'
-									/> */}
+									/>
 								</div>
 							</Fade>
 						</Modal>

@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "start": "node -r ts-node/register ./src/server.ts",
+    "start": "ts-node ./src/server.ts",
     "start:watch": "nodemon",
     "build": "tsc"
   },
@@ -27,14 +27,14 @@
     "mongoose": "^5.8.3",
     "npm": "^6.14.2",
     "swagger-jsdoc": "^3.5.0",
-    "swagger-ui-express": "^4.1.2"
+    "swagger-ui-express": "^4.1.2",
+    "ts-node": "^10.4.0"
   },
   "devDependencies": {
     "@types/node": "^12.7.0",
     "eslint": "^6.1.0",
     "eslint-plugin-import": "^2.18.2",
     "nodemon": "^1.19.1",
-    "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   },
   "nodemonConfig": {
