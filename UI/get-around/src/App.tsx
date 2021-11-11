@@ -1,21 +1,28 @@
-import React, { FC, useState } from 'react';
-import logo from './assets/logo.png';
-import mapPhoto from './assets/map.jpeg';
-import AsyncSelect from 'react-select/async';
-import AwesomeDebouncePromise from 'awesome-debounce-promise';
-import axios from 'axios';
-import { MultiValue } from 'react-select';
-import './App.css';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import { Backdrop, Box, createTheme, Fade, Modal, Typography } from '@mui/material';
-import { ThemeProvider } from '@emotion/react';
-import { DateRange, DateRangePicker, RangeKeyDict } from 'react-date-range';
-import { addDays } from 'date-fns';
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
-import { style } from '@mui/system';
-import { MyComponent } from './s';
+import React, { FC, useState } from "react";
+import logo from "./assets/logo.png";
+import mapPhoto from "./assets/map.jpeg";
+import AsyncSelect from "react-select/async";
+import AwesomeDebouncePromise from "awesome-debounce-promise";
+import axios from "axios";
+import { MultiValue } from "react-select";
+import "./App.css";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import {
+  Backdrop,
+  Box,
+  createTheme,
+  Fade,
+  Modal,
+  Typography,
+} from "@mui/material";
+import { ThemeProvider } from "@emotion/react";
+import { DateRange, DateRangePicker, RangeKeyDict } from "react-date-range";
+import { addDays } from "date-fns";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { style } from "@mui/system";
+import { MyComponent } from "./s";
 
 interface Option {
   value: string;
@@ -64,6 +71,8 @@ const App: FC = () => {
   const [dates, setDate] = useState<RangeKeyDict>({
     range1: { startDate: new Date(), endDate: addDays(new Date(), 1) },
   });
+  const [mapOpen, setMapOpen] = useState(false);
+  const [daysRoutes,setDaysRoutes] = useState([]);
 
   const numOfDays = useMemo(
     () =>
