@@ -1,24 +1,21 @@
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import * as cookieParser from 'cookie-parser';
-import { IController } from './shared/IController';
-import { connect } from 'mongoose';
-
-const cors = require('cors');
-
+import * as express from "express";
+import * as bodyParser from "body-parser";
+import * as cors from "cors";
+import * as cookieParser from "cookie-parser";
+import { IController } from "./shared/IController";
 export class App {
-	app: express.Application;
-	port: number;
-	router: express.Router;
+  app: express.Application;
+  port: number;
+  router: express.Router;
 
-	constructor(controllers: Array<IController>, port: number) {
-		this.app = express();
-		this.port = port;
-		this.router = express.Router();
+  constructor(controllers: Array<IController>, port: number) {
+    this.app = express();
+    this.port = port;
+    this.router = express.Router();
 
-		this.initializeMiddlewares();
-		this.initializeControllers(controllers);
-	}
+    this.initializeMiddlewares();
+    this.initializeControllers(controllers);
+  }
 
 	public async listen() {
 		//   try {
@@ -42,13 +39,9 @@ export class App {
 		this.app.use(cors());
 	}
 
-	private initializeControllers(controllers: Array<IController>) {
-		controllers.forEach((controller) => {
-			this.app.use(`/api/${controller.path}`, controller.router);
-		});
-
-		// this.app.get("/", (req, res) => {
-		//   res.send("hello adi");
-		// });
-	}
+  private initializeControllers(controllers: Array<IController>) {
+    controllers.forEach((controller) => {
+      this.app.use(`/api/${controller.path}`, controller.router);
+    });
+  }
 }
