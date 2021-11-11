@@ -10,7 +10,7 @@ import {
   PlacesAutocompleteResponse,
 } from "../models/placeInterfaces.model";
 import { TripPlanningBL } from "../bl/tripPlanningBL";
-import { SPFAlgorithm, LocationCluster, locationClusterConstructor } from "../bl/SPFAlgorithm";
+import { SPFAlgorithm, LocationCluster, locationClusterConstructor, LocationNode } from "../bl/SPFAlgorithm";
 
 export class PlacesController implements IController {
   path = "places";
@@ -97,10 +97,14 @@ export class PlacesController implements IController {
       }
       // });
 
-      const clusters = new TripPlanningBL().clusterLocations(places,2);
+      const clusters = new TripPlanningBL().clusterLocations(places, 2);
       const newClusters: LocationCluster[] = locationClusterConstructor(clusters, distances);
-      const result = newClusters.map(cluster => new SPFAlgorithm().getOptimalPath(cluster)); 
-      res.send({ distancesData, places,distances }).status(200);
+      const selectedLocationNodes: LocationNode[][] = newClusters.map(cluster => new SPFAlgorithm().getOptimalPath(cluster));
+      const resultLocations = selectedLocationNodes.map((selectedLocationsPerDay: LocationNode[]) => {
+          return selectedLocationsPerDay.map((selectedLocationNode: LocationNode) => selectedLocationNode.location);
+        });
+
+      res.send(resultLocations).status(200);
     });
 
     this.router.post("/search", async (req, res) => {
