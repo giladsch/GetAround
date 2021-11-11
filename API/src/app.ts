@@ -1,8 +1,10 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
-import * as cors from "cors";
 import * as cookieParser from "cookie-parser";
 import { IController } from "./shared/IController";
+
+const cors = require("cors")
+
 export class App {
   app: express.Application;
   port: number;
@@ -17,26 +19,27 @@ export class App {
     this.initializeControllers(controllers);
   }
 
-  public async listen() {
-    //   try {
-    //     await connect(process.env.connectString, {
-    //       useNewUrlParser: true,
-    //       useUnifiedTopology: true
-    //     });
-    //     console.log("mongodb started.");
-    this.app.listen(this.port, () => {
-      console.log(`App listening on the port ${this.port}`);
-    });
-    //   } catch (e) {
-    //     console.error(`an error accourd: ${e}`);
-    //   }
-  }
+	public async listen() {
+		//   try {
+		//     await connect(process.env.connectString, {
+		//       useNewUrlParser: true,
+		//       useUnifiedTopology: true
+		//     });
+		//     console.log("mongodb started.");
+		this.app.listen(process.env.PORT || 80, () => {
+			console.log(`App listening on the port ${process.env.PORT || 80}`);
+		});
+		//   } catch (e) {
+		//     console.error(`an error accourd: ${e}`);
+		//   }
+	}
 
-  private initializeMiddlewares() {
-    this.app.use(cors());
-    this.app.use(bodyParser.json());
-    this.app.use(cookieParser());
-  }
+	private initializeMiddlewares() {
+		this.app.get('/isAlive', (req, res) => res.send('alive'));
+		this.app.use(bodyParser.json());
+		this.app.use(cookieParser());
+		this.app.use(cors());
+	}
 
   private initializeControllers(controllers: Array<IController>) {
     controllers.forEach((controller) => {
