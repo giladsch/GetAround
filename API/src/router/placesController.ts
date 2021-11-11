@@ -3,7 +3,12 @@ import * as express from "express";
 import { IController } from "../shared/IController";
 import axios, { AxiosResponse } from "axios";
 import { SimplePlace } from "../models/location.model";
-import { Place, Option, RootObject, PlacesAutocompleteResponse } from "../models/placeInterfaces.model";
+import {
+  Place,
+  Option,
+  RootObject,
+  PlacesAutocompleteResponse,
+} from "../models/placeInterfaces.model";
 import { TripPlanningBL } from "../bl/tripPlanningBL";
 
 export class PlacesController implements IController {
@@ -15,13 +20,11 @@ export class PlacesController implements IController {
   }
 
   public initializeRoutes() {
-    this.router.get(`/aaaaa`, async (req, res) => {
-      const ids: Array<string> = [
-        "ChIJrRMgU7ZhLxMRxAOFkC7I8Sg",
-        "ChIJaUtr7LFhLxMRZv_QkugkuUc",
-        "ChIJkRvJRqRhLxMRTpu4WRhK6CM",
-        "ChIJ2UYsr1RgLxMRnVSDeOy_ZLg",
-      ];
+    this.router.post("/plan", async (req, res) => {
+      const ids: Array<string> = req.body.places.map((place) => {
+        return place.value;
+      });
+      const numOfDays: number = req.body.numOfDays;
       let promises: Array<Promise<AxiosResponse<Place>>> = [];
       ids.forEach((id) => {
         const request = axios.get<Place>(
@@ -36,6 +39,9 @@ export class PlacesController implements IController {
           {};
         data.result.opening_hours.periods.map((period) => {
           const open = period.open.time;
+          if (!period.close) {
+            period.close = { time: "2359", day: period.open.day };
+          }
           const close = period.close.time;
           days[period.close.day] = {
             openHour: open.slice(0, 2) + ":" + open.slice(2),
@@ -73,7 +79,7 @@ export class PlacesController implements IController {
       let distancesData = distancesResult.map((distancesResponse) => {
         return distancesResponse.data.rows;
       });
-      const clusters = new TripPlanningBL().clusterLocations(places,2);
+      const clusters = new TripPlanningBL().clusterLocations(places, numOfDays);
       res.send({ distancesData, places }).status(200);
     });
 
@@ -95,5 +101,5 @@ export class PlacesController implements IController {
   }
 
   public bl: TripPlanningBL = new TripPlanningBL();
-  public 
+  public;
 }
